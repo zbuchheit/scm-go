@@ -475,6 +475,7 @@ func (c *Client) Do(ctx context.Context, method string, path string, queryParams
 	case http.StatusTooManyRequests, http.StatusBadGateway, http.StatusServiceUnavailable, http.StatusGatewayTimeout:
 		// Sleep for a bit and try again.
 		// TODO(shinmog): When/if this is implemented, verify backoff logic with eng.
+		c.Log(ctx, api.LogDetailed, fmt.Sprintf("Response code %d encountered, sleeping for %d seconds", resp.StatusCode, len(retry)+1))
 		c.sleep(time.Duration(len(retry)+1) * time.Second)
 		return c.Do(ctx, method, path, queryParams, input, output, append(retry, stat)...)
 	default:
